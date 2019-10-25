@@ -1,5 +1,7 @@
 import PolymorphicSchema from './Polymorphic';
 
+const DELETED_ITEM = Symbol('item_deleted');
+
 const validateSchema = (definition) => {
   const isArray = Array.isArray(definition);
   if (isArray && definition.length > 1) {
@@ -23,13 +25,10 @@ export const normalize = (schema, input, parent, key, visit, addEntity, visitedE
 
 export const denormalize = (schema, input, unvisit) => {
   schema = validateSchema(schema);
-  if (input && input.map) {
-    return input.map((entityOrId) => unvisit(entityOrId, schema));
+  if (input && input.map && input.filter) {
+    return input.map((entityOrId) => unvisit(entityOrId, schema)).filter((entity) => entity !== DELETED_ITEM);
   }
-  if (schema.hasOwnProperty('deleteKey')) {
-    return input[schema.deleteKey] ? null : input;
-  }
-  return input;
+  return schema && schema.deleteKey && input && input[schema.deleteKey] ? DELETED_ITEM : input;
 };
 
 export default class ArraySchema extends PolymorphicSchema {

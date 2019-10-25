@@ -3,6 +3,8 @@ import * as ImmutableUtils from './ImmutableUtils';
 const getDefaultGetId = (idAttribute) => (input) =>
   ImmutableUtils.isImmutable(input) ? input.get(idAttribute) : input[idAttribute];
 
+export const DEFAULT_DELETE_KEY = Symbol('default_delete_key');
+
 export default class EntitySchema {
   constructor(key, definition = {}, options = {}) {
     if (!key || typeof key !== 'string') {
@@ -11,15 +13,11 @@ export default class EntitySchema {
 
     const {
       idAttribute = 'id',
-      deleteKey = null,
+      deleteKey = DEFAULT_DELETE_KEY,
       mergeStrategy = (entityA, entityB) => {
         const res = { ...entityA, ...entityB };
-        if (deleteKey) {
-          if (entityB[deleteKey]) {
-            res[deleteKey] = true;
-          } else {
-            delete res[deleteKey];
-          }
+        if (entityA[deleteKey] && !entityB[deleteKey]) {
+          delete res[deleteKey];
         }
         return res;
       },
