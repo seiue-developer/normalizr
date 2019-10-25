@@ -77,6 +77,8 @@ const unvisitEntity = (id, schema, unvisit, getEntity, cache) => {
   return cache[schema.key][id];
 };
 
+// TODO 对另外几种 schema 提供支持
+// TODO 补充单元测试
 const getUnvisit = (entities) => {
   const cache = {};
   const getEntity = getEntities(entities);
@@ -99,6 +101,11 @@ const getUnvisit = (entities) => {
   };
 };
 
+/**
+ * 以 entities 为数据源返回查询 entity 的函数
+ * @param entities
+ * @return {Function} (entityOrId, schema) => entity
+ */
 const getEntities = (entities) => {
   const isImmutable = ImmutableUtils.isImmutable(entities);
 

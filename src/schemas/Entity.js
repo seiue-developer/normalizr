@@ -11,8 +11,17 @@ export default class EntitySchema {
 
     const {
       idAttribute = 'id',
+      deleteKey = null,
       mergeStrategy = (entityA, entityB) => {
-        return { ...entityA, ...entityB };
+        const res = { ...entityA, ...entityB };
+        if (deleteKey) {
+          if (entityB[deleteKey]) {
+            res[deleteKey] = true;
+          } else {
+            delete res[deleteKey];
+          }
+        }
+        return res;
       },
       processStrategy = (input) => ({ ...input })
     } = options;
@@ -20,6 +29,7 @@ export default class EntitySchema {
     this._key = key;
     this._getId = typeof idAttribute === 'function' ? idAttribute : getDefaultGetId(idAttribute);
     this._idAttribute = idAttribute;
+    this._deleteKey = deleteKey;
     this._mergeStrategy = mergeStrategy;
     this._processStrategy = processStrategy;
     this.define(definition);
@@ -31,6 +41,10 @@ export default class EntitySchema {
 
   get idAttribute() {
     return this._idAttribute;
+  }
+
+  get deleteKey() {
+    return this._deleteKey;
   }
 
   define(definition) {

@@ -23,7 +23,13 @@ export const normalize = (schema, input, parent, key, visit, addEntity, visitedE
 
 export const denormalize = (schema, input, unvisit) => {
   schema = validateSchema(schema);
-  return input && input.map ? input.map((entityOrId) => unvisit(entityOrId, schema)) : input;
+  if (input && input.map) {
+    return input.map((entityOrId) => unvisit(entityOrId, schema));
+  }
+  if (schema.hasOwnProperty('deleteKey')) {
+    return input[schema.deleteKey] ? null : input;
+  }
+  return input;
 };
 
 export default class ArraySchema extends PolymorphicSchema {
