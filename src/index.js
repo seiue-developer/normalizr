@@ -77,7 +77,7 @@ const unvisitEntity = (id, schema, unvisit, getEntity, cache) => {
   return cache[schema.key][id];
 };
 
-// TODO 对另外几种 schema 提供支持
+// TODO 支持 UnionSchema & ValuesSchema
 // TODO 补充单元测试
 const getUnvisit = (entities) => {
   const cache = {};
@@ -101,26 +101,23 @@ const getUnvisit = (entities) => {
   };
 };
 
-/**
- * 以 entities 为数据源返回查询 entity 的函数
- * @param entities
- * @return {Function} (entityOrId, schema) => entity
- */
 const getEntities = (entities) => {
   const isImmutable = ImmutableUtils.isImmutable(entities);
 
   return (entityOrId, schema) => {
-    const schemaKey = schema.key;
+    const { key: schemaKey, deleteKey } = schema;
 
     if (typeof entityOrId === 'object') {
-      return entityOrId;
+      return entityOrId[deleteKey] ? null : entityOrId;
     }
 
+    let entity = null;
     if (isImmutable) {
-      return entities.getIn([schemaKey, entityOrId.toString()]);
+      entity = entities.getIn([schemaKey, entityOrId.toString()]);
+    } else {
+      entity = entities[schemaKey] && entities[schemaKey][entityOrId];
     }
-
-    return entities[schemaKey] && entities[schemaKey][entityOrId];
+    return entity && ImmutableUtils.getProperty(entity, deleteKey) ? null : entity;
   };
 };
 

@@ -1,7 +1,6 @@
 import * as ImmutableUtils from './ImmutableUtils';
 
-const getDefaultGetId = (idAttribute) => (input) =>
-  ImmutableUtils.isImmutable(input) ? input.get(idAttribute) : input[idAttribute];
+const getDefaultGetId = (idAttribute) => (input) => ImmutableUtils.getProperty(input, idAttribute);
 
 export const DEFAULT_DELETE_KEY = Symbol('default_delete_key');
 
