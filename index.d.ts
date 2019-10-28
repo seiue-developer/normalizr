@@ -46,6 +46,8 @@ export type Schema<T = any> =
   | SchemaObject<T>
   | SchemaArray<T>;
 
+export const DEFAULT_DELETE_KEY: unique symbol
+
 export interface SchemaObject<T> {
   [key: string]: Schema<T>
 }
