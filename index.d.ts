@@ -18,6 +18,7 @@ declare namespace schema {
     constructor(key: string | symbol, definition?: Schema, options?: EntityOptions<T>)
     define(definition: Schema): void
     key: string
+    deleteKey: Symbol
     getId: SchemaFunction
     _processStrategy: StrategyFunction<T>
   }
