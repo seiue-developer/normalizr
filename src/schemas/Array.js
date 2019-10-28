@@ -1,3 +1,4 @@
+import { isImmutable } from './ImmutableUtils';
 import PolymorphicSchema from './Polymorphic';
 
 const DELETED_ITEM = Symbol('item_deleted');
@@ -25,8 +26,16 @@ export const normalize = (schema, input, parent, key, visit, addEntity, visitedE
 
 export const denormalize = (schema, input, unvisit) => {
   schema = validateSchema(schema);
-  if (input && input.map && input.filter) {
+  if (isImmutable(input) && input.map && input.filter) {
     return input.map((entityOrId) => unvisit(entityOrId, schema)).filter((entity) => entity !== DELETED_ITEM);
+  } else if (Array.isArray(input)) {
+    return input.reduce((array, entityOrId) => {
+      const res = unvisit(entityOrId, schema);
+      if (res !== DELETED_ITEM) {
+        array.push(res);
+      }
+      return array;
+    }, []);
   }
   return schema && schema.deleteKey && input && input[schema.deleteKey] ? DELETED_ITEM : input;
 };

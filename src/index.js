@@ -5,6 +5,8 @@ import ValuesSchema from './schemas/Values';
 import ArraySchema, * as ArrayUtils from './schemas/Array';
 import ObjectSchema, * as ObjectUtils from './schemas/Object';
 
+export const DEFAULT_DELETE_KEY = Symbol('default_delete_key');
+
 const visit = (value, parent, key, schema, addEntity, visitedEntities) => {
   if (typeof value !== 'object' || !value) {
     return value;
@@ -77,8 +79,6 @@ const unvisitEntity = (id, schema, unvisit, getEntity, cache) => {
   return cache[schema.key][id];
 };
 
-// TODO 支持 UnionSchema & ValuesSchema
-// TODO 补充单元测试
 const getUnvisit = (entities) => {
   const cache = {};
   const getEntity = getEntities(entities);
