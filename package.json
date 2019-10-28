@@ -1,6 +1,6 @@
 {
   "name": "@seiue/normalizr",
-  "version": "3.5.2-beta.2",
+  "version": "3.5.2-beta.3",
   "description": "Normalizes and denormalizes JSON according to schema for Redux and Flux applications",
   "bugs": {
     "url": "https://github.com/seiue-developer/normalizr/issues"
