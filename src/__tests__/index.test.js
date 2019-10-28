@@ -294,4 +294,70 @@ describe('denormalize', () => {
 
     expect(denormalize(normalizedData.result, [patronsSchema], normalizedData.entities)).toMatchSnapshot();
   });
+
+  test('denormalize with sub entity delete key set to truthy value', () => {
+    const user = new schema.Entity('users');
+    const article = new schema.Entity('articles', { author: user });
+    const entities = {
+      articles: {
+        '123': {
+          id: '123',
+          title: 'A Great Article',
+          author: '8472'
+        }
+      },
+      users: {
+        '8472': {
+          id: '8472',
+          name: 'Paul',
+          [user.deleteKey]: true
+        }
+      }
+    };
+    expect(denormalize('123', article, entities)).toEqual({
+      id: '123',
+      title: 'A Great Article',
+      author: null
+    });
+  });
+
+  test('normalize with sub entity delete key set to true', () => {
+    const user = new schema.Entity('users');
+    const article = new schema.Entity('articles', { author: user });
+    const oneArticle = {
+      id: '123',
+      title: 'A Great Article',
+      author: {
+        id: '8472',
+        name: 'Paul',
+        [user.deleteKey]: true
+      }
+    };
+    const entities = {
+      articles: {
+        '123': {
+          id: '123',
+          title: 'A Great Article',
+          author: '8472'
+        }
+      },
+      users: {
+        '8472': {
+          id: '8472',
+          name: 'Paul',
+          [user.deleteKey]: true
+        }
+      }
+    };
+    expect(normalize(oneArticle, article)).toEqual({
+      entities,
+      result: '123'
+    });
+    expect(denormalize('8472', user, entities)).toBeNull();
+    expect(denormalize('123', article, entities)).toEqual({
+      id: '123',
+      title: 'A Great Article',
+      author: null
+    });
+  });
 });

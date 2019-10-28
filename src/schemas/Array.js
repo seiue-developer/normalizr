@@ -27,12 +27,17 @@ export const normalize = (schema, input, parent, key, visit, addEntity, visitedE
 export const denormalize = (schema, input, unvisit) => {
   schema = validateSchema(schema);
   if (isImmutable(input) && input.map && input.filter) {
-    return input.map((entityOrId) => unvisit(entityOrId, schema)).filter((entity) => entity !== DELETED_ITEM);
+    return input
+      .map((entityOrId) => {
+        const unvisited = unvisit(entityOrId, schema);
+        return unvisited === entityOrId || unvisited ? unvisited : DELETED_ITEM;
+      })
+      .filter((entity) => entity !== DELETED_ITEM);
   } else if (Array.isArray(input)) {
     return input.reduce((array, entityOrId) => {
-      const res = unvisit(entityOrId, schema);
-      if (res !== DELETED_ITEM) {
-        array.push(res);
+      const unvisited = unvisit(entityOrId, schema);
+      if (unvisited !== entityOrId && unvisited && unvisited !== DELETED_ITEM) {
+        array.push(unvisited);
       }
       return array;
     }, []);

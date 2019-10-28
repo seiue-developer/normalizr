@@ -1,3 +1,7 @@
+# v3.5.2
+
+* **Added** Support deleteKey for `EntitySchema`
+
 # v3.4.0
 
 * **Changed** Now built with Babel 7
