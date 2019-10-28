@@ -1,13 +1,13 @@
 {
-  "name": "normalizr",
-  "version": "3.4.1",
+  "name": "@seiue/normalizr",
+  "version": "3.5.0",
   "description": "Normalizes and denormalizes JSON according to schema for Redux and Flux applications",
   "bugs": {
-    "url": "https://github.com/paularmstrong/normalizr/issues"
+    "url": "https://github.com/seiue-developer/normalizr/issues"
   },
-  "homepage": "https://github.com/paularmstrong/normalizr",
+  "homepage": "https://github.com/seiue-developer/normalizr",
   "repository": {
-    "url": "https://github.com/paularmstrong/normalizr.git",
+    "url": "https://github.com/seiue-developer/normalizr.git",
     "type": "git"
   },
   "keywords": [
