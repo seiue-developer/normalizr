@@ -1,6 +1,6 @@
 import * as ImmutableUtils from './ImmutableUtils';
 
-const DELETE_KEY = Symbol('delete_key');
+const DELETE_KEY = Symbol.for('normalizr_delete_key');
 const getDefaultGetId = (idAttribute) => (input) => ImmutableUtils.getProperty(input, idAttribute);
 
 export default class EntitySchema {

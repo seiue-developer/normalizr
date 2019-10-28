@@ -1,7 +1,7 @@
 import { isImmutable } from './ImmutableUtils';
 import PolymorphicSchema from './Polymorphic';
 
-const DELETED_ITEM = Symbol('item_deleted');
+const DELETED_ITEM = Symbol.for('normalizr_deleted_item_symbol');
 
 const validateSchema = (definition) => {
   const isArray = Array.isArray(definition);
