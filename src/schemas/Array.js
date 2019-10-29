@@ -36,13 +36,13 @@ export const denormalize = (schema, input, unvisit) => {
   } else if (Array.isArray(input)) {
     return input.reduce((array, entityOrId) => {
       const unvisited = unvisit(entityOrId, schema);
-      if (unvisited !== entityOrId && unvisited && unvisited !== DELETED_ITEM) {
+      if (unvisited === entityOrId || unvisited) {
         array.push(unvisited);
       }
       return array;
     }, []);
   }
-  return schema && schema.deleteKey && input && input[schema.deleteKey] ? DELETED_ITEM : input;
+  return input;
 };
 
 export default class ArraySchema extends PolymorphicSchema {

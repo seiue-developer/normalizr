@@ -321,27 +321,22 @@ describe('denormalize', () => {
     });
   });
 
-  test('normalize with sub entity delete key set to true', () => {
+  test('denormalize with sub entity delete key set to true', () => {
     const user = new schema.Entity('users');
-    const article = new schema.Entity('articles', { author: user });
-    const oneArticle = {
-      id: '123',
-      title: 'A Great Article',
-      author: {
-        id: '8472',
-        name: 'Paul',
-        [user.deleteKey]: true
-      }
-    };
+    const article = new schema.Entity('articles', { authors: [user] });
     const entities = {
       articles: {
         '123': {
           id: '123',
           title: 'A Great Article',
-          author: '8472'
+          authors: ['8472', '8471']
         }
       },
       users: {
+        '8471': {
+          id: '8471',
+          name: 'Frank'
+        },
         '8472': {
           id: '8472',
           name: 'Paul',
@@ -349,15 +344,15 @@ describe('denormalize', () => {
         }
       }
     };
-    expect(normalize(oneArticle, article)).toEqual({
-      entities,
-      result: '123'
-    });
-    expect(denormalize('8472', user, entities)).toBeNull();
     expect(denormalize('123', article, entities)).toEqual({
       id: '123',
       title: 'A Great Article',
-      author: null
+      authors: [
+        {
+          id: '8471',
+          name: 'Frank'
+        }
+      ]
     });
   });
 });
