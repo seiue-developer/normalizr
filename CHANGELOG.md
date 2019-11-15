@@ -1,3 +1,7 @@
+# v3.5.3
+
+* **Fixed/Changed** 2th/3rd params of Entity.getId become optional
+
 # v3.5.2
 
 * **Added** Support deleteKey for `EntitySchema`
