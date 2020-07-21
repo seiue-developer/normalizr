@@ -1,7 +1,7 @@
 import * as ImmutableUtils from './ImmutableUtils';
 
-const getDefaultGetId = (idAttribute) => (input) =>
-  ImmutableUtils.isImmutable(input) ? input.get(idAttribute) : input[idAttribute];
+const DELETE_KEY = Symbol.for('normalizr_delete_key');
+const getDefaultGetId = (idAttribute) => (input) => ImmutableUtils.getProperty(input, idAttribute);
 
 export default class EntitySchema {
   constructor(key, definition = {}, options = {}) {
@@ -12,7 +12,11 @@ export default class EntitySchema {
     const {
       idAttribute = 'id',
       mergeStrategy = (entityA, entityB) => {
-        return { ...entityA, ...entityB };
+        const res = { ...entityA, ...entityB };
+        if (entityA[DELETE_KEY] && !entityB[DELETE_KEY]) {
+          delete res[DELETE_KEY];
+        }
+        return res;
       },
       processStrategy = (input) => ({ ...input })
     } = options;
@@ -20,6 +24,7 @@ export default class EntitySchema {
     this._key = key;
     this._getId = typeof idAttribute === 'function' ? idAttribute : getDefaultGetId(idAttribute);
     this._idAttribute = idAttribute;
+    this._deleteKey = DELETE_KEY;
     this._mergeStrategy = mergeStrategy;
     this._processStrategy = processStrategy;
     this.define(definition);
@@ -31,6 +36,10 @@ export default class EntitySchema {
 
   get idAttribute() {
     return this._idAttribute;
+  }
+
+  get deleteKey() {
+    return this._deleteKey;
   }
 
   define(definition) {

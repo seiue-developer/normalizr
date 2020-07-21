@@ -103,17 +103,19 @@ const getEntities = (entities) => {
   const isImmutable = ImmutableUtils.isImmutable(entities);
 
   return (entityOrId, schema) => {
-    const schemaKey = schema.key;
+    const { key: schemaKey, deleteKey } = schema;
 
     if (typeof entityOrId === 'object') {
-      return entityOrId;
+      return entityOrId[deleteKey] ? null : entityOrId;
     }
 
+    let entity = null;
     if (isImmutable) {
-      return entities.getIn([schemaKey, entityOrId.toString()]);
+      entity = entities.getIn([schemaKey, entityOrId.toString()]);
+    } else {
+      entity = entities[schemaKey] && entities[schemaKey][entityOrId];
     }
-
-    return entities[schemaKey] && entities[schemaKey][entityOrId];
+    return entity && ImmutableUtils.getProperty(entity, deleteKey) ? null : entity;
   };
 };
 

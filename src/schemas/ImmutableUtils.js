@@ -41,3 +41,7 @@ export function denormalizeImmutable(schema, input, unvisit) {
     }
   }, input);
 }
+
+export function getProperty(input, key) {
+  return isImmutable(input) ? input.get(key) : input[key];
+}
